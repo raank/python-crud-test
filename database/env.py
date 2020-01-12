@@ -29,7 +29,7 @@ fileConfig(config.config_file_name)
 
 MODEL_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../")
 sys.path.append(MODEL_PATH)
-import model
+from app import model
 
 # edit this line and pass metadata
 target_metadata = model.Base.metadata

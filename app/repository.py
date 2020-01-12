@@ -19,6 +19,7 @@ class Repository(object):
             currentTable = otherTable
             
         item = self.connection.cursor().execute('SELECT * FROM %s WHERE id = %s' % (currentTable, id))
+        
         return item.fetchone()
     
     def last(self):

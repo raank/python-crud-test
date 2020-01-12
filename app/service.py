@@ -3,40 +3,30 @@ import csv
 import datetime
 from app.model import Entity
 from pathlib import Path
-import env_file
+import config
 
 class Crud(object):
-    def __init__(self, entity, action):
+    def __init__(self, entity, action, connection):
         self.table = entity.__tablename__
-        self.entity = Entity(self.table)
+        self.entity = Entity(self.table, connection)
         self.action = action
         self.model = entity
         self.repository = self.entity.repository()
-        
-    def asking(self, fields):
-        inputs = {}
-        keys = list(fields.keys())
-        values = list(fields.values())
-        
-        for key in keys:
-            inputs.update({key: input(fields.get(key))})
-            
-        return list([inputs])
     
     def index(self):
         return self.entity.index()
     
-    def store(self):
-        data = self.asking(self.model.fields_store)
-        
-        getValidators = getattr(self.model, 'validators')
-        
-        validation = getValidators(data)
-        
-        if validation:
-            return validation
-        
-        return self.entity.store(data)
+    def store(self, data):
+        try:
+            getValidators = getattr(self.model, 'validators')
+            validation = getValidators(data)
+            
+            if validation:
+                return validation
+            else:
+                return self.entity.store(data)
+        finally:
+            return self.entity.store(data)
         
     def show(self, id):
         item = self.repository.find(id)
@@ -46,11 +36,10 @@ class Crud(object):
         else:
             return 'Item notfound'
     
-    def update(self, id):
+    def update(self, id, data):
         item = self.repository.find(id)
         
         if item is not None:
-            data = self.asking(self.model.fields_update)
             return self.entity.update(id, data)
         else:
             return 'Item notfound'
@@ -60,7 +49,7 @@ class Crud(object):
         
         if item is not None:
             if (self.entity.delete(id)):
-                return 'Item removed'
+                return 'Item Removed'
             else:
                 return 'Could not remove item.'
         else:
@@ -68,8 +57,7 @@ class Crud(object):
         
     def export(self):
         date = datetime.datetime.now()
-        envs = env_file.get('.env')
-        file = '%s/%s-%s.csv' % (envs.get('EXPORT_PATH'), self.table, date.strftime("%Y-%m-%d-%H%M%S"))
+        file = '%s/%s-%s.csv' % (config.get('export_path'), self.table, date.strftime("%Y-%m-%d-%H%M%S"))
         Path(file).touch()
         
         with open(file, 'wb') as csv_file:

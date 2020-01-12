@@ -75,12 +75,12 @@ class Product(Base):
         return False
     
 class Entity(object):
-    def __init__(self, table):
+    def __init__(self, table, connection):
         self.table = table
+        self.connection = connection
     
     def repository(self):
-        connection = Connection()
-        rep = Repository(connection, self.table);
+        rep = Repository(self.connection, self.table);
         
         return rep
     

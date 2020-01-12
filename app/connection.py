@@ -1,12 +1,16 @@
 import sqlite3
 import os
 import sys
-import env_file
+import config
 
 class Connection(object):
-    def __init__(self):
-        envs = env_file.get('.env')
-        file = './%s' % envs.get('DATABASE')
+    def __init__(self, tests=False):
+        if tests:
+            db_file = config.get('database_tests')
+        else:
+            db_file = config.get('database')
+        
+        file = './%s' % db_file
         
         try:
             self.conn = sqlite3.connect(file)
