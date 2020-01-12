@@ -3,11 +3,9 @@ Click==7.0
 env-file==2019.4.13
 Mako==1.1.0
 MarkupSafe==1.1.1
-mysql-connector-python==8.0.18
 pathlib==1.0.1
 protobuf==3.11.2
 public==2019.4.13
-PyMySQL==0.9.3
 python-dateutil==2.8.1
 python-editor==1.0.4
 six==1.13.0

@@ -1,10 +1,21 @@
+# Python CRUD via Terminal
+
+Python CRUd via terminal para inserir Clientes e seus Produtos.
+Foi usado alguns pacotes para o projeto
+
+- **alembic** migrations.
+- **SQLAlchemy** manipular banco de dados.
+- **click** manipular os comandos de console.
+- **pathlib** manipular arquivo de exportação.
+- **env_file** arquivo de envs.
+
 ### Instalando
 `git clone https://github.com/raank/python-crud-test.git`
 `cd python-crud-test && bash install.sh`
 
 ### Usando o CRUD
 
-Commandos:
+Comandos:
     `python run.py -m {model} -a {action} id={id|opcional}`
 
 Exemplos:
@@ -15,7 +26,7 @@ Exemplos:
 - Removendo: `python run.py -m clients -a delete id=1`
 - Exportar: `python run.py -m clients -a export`
 
-Models disponíveis:
+Modelos disponíveis:
 - **clients**: Clientes
 - **products**: Produtos dos clientes.
 
