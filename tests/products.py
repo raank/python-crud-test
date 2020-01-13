@@ -2,25 +2,35 @@ import unittest
 from app.service import Crud
 from app.model import Product, Client
 from app.connection import Connection
+from app.repository import Repository
 
 class TestsProducts(unittest.TestCase):
     def setUp(self):
         self.connection = Connection(True)
         self.entity = Product()
+        self.repository = Repository(self.connection, self.entity.__tablename__)
         
-    def lastClient(self):
-        clients = Crud(self.entity, 'show', self.connection)
-
-        return clients.repository.last()
+        self.create_product()
+        
+    def create_product(self):
+        _initTest = Crud(self.entity, 'store', self.connection)
+        
+        data = [
+            {
+                'client_id': 1,
+                'name': 'Product Name',
+                'price': 1000
+            }
+        ]
+        
+        return _initTest.store(data)
         
     def test_store_products(self):
         _initTest = Crud(self.entity, 'store', self.connection)
         
-        client = self.lastClient()
-        
         data = [
             {
-                'client_id': client[0],
+                'client_id': 1,
                 'name': 'Product Name',
                 'price': 1000
             }
@@ -28,14 +38,13 @@ class TestsProducts(unittest.TestCase):
         
         response = _initTest.store(data)
         self.assertTrue(response != None)
-        self.assertEqual(response[1], client[0])
-        
+        self.assertEqual(response[1], 1)
+        self.assertEqual(response[2], data[0].get('name'))
+
     def test_show_products(self):
         _initTest = Crud(self.entity, 'show', self.connection)
         
-        last = _initTest.repository.last()
-        
-        response = _initTest.show(last[0])
+        response = _initTest.show(1)
         self.assertTrue(response != None)
         
     def test_index_products(self):
@@ -43,12 +52,11 @@ class TestsProducts(unittest.TestCase):
         
         response = _initTest.index()
         self.assertTrue(response != None)
-        self.assertTrue(len(list(response)) > 0)
         
     def test_update_products(self):
         _initTest = Crud(self.entity, 'update', self.connection)
         
-        last = _initTest.repository.last()
+        last = self.repository.last()
         data = [
             {
                 'price': 2000
@@ -62,7 +70,7 @@ class TestsProducts(unittest.TestCase):
     def test_delete_products(self):
         _initTest = Crud(self.entity, 'delete', self.connection)
         
-        last = _initTest.repository.last()
+        last = self.repository.last()
         
-        response = _initTest.show(last[0])
+        response = _initTest.delete(last[0])
         self.assertTrue(response != None)

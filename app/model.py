@@ -53,9 +53,9 @@ class Product(Base):
         'price': 'Novo valor do produto: '
     }
     
-    def validators(self, data):
+    def validators(self, data, connection):
         tableClient = Client.__tablename__
-        entityClient = Entity(tableClient)
+        entityClient = Entity(tableClient, connection)
         repository = entityClient.repository()
         
         errors = []

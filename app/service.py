@@ -8,6 +8,7 @@ import config
 class Crud(object):
     def __init__(self, entity, action, connection):
         self.table = entity.__tablename__
+        self.connection = connection
         self.entity = Entity(self.table, connection)
         self.action = action
         self.model = entity
@@ -17,16 +18,14 @@ class Crud(object):
         return self.entity.index()
     
     def store(self, data):
-        try:
-            getValidators = getattr(self.model, 'validators')
-            validation = getValidators(data)
-            
+        validators = hasattr(self.model, 'validators')
+        
+        if validators:
+            validation = self.model.validators(data, self.connection)
             if validation:
                 return validation
-            else:
-                return self.entity.store(data)
-        finally:
-            return self.entity.store(data)
+            
+        return self.entity.store(data)
         
     def show(self, id):
         item = self.repository.find(id)
