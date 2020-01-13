@@ -16,9 +16,14 @@ class TestsProducts(unittest.TestCase):
         
         last_client = self.repository_clients.last()
         
+        if last_client is None:
+            id = 1
+        else:
+            id = last_client[0]
+        
         data = [
             {
-                'client_id': last_client[0],
+                'client_id': id,
                 'name': 'Product Name',
                 'price': 1000
             }
@@ -26,7 +31,7 @@ class TestsProducts(unittest.TestCase):
         
         response = _initTest.store(data)
         self.assertTrue(response != None)
-        self.assertEqual(response[1], last_client[0])
+        self.assertEqual(response[1], id)
         self.assertEqual(response[2], data[0].get('name'))
 
     def test_show_products(self):
@@ -51,24 +56,20 @@ class TestsProducts(unittest.TestCase):
     def test_update_products(self):
         _initTest = Crud(self.entity, 'update', self.connection)
         
-        last = self.repository.last()
-        
         data = [
             {
-                'price': 2000
+                'name': 'New Name'
             }
         ]
         
-        response = _initTest.update(last[0], data)
-        self.assertTrue(response != None)
-        self.assertEqual(response[3], data[0].get('price'))
-    
-    '''
-    def test_delete_products(self):
-        _initTest = Crud(self.entity, 'delete', self.connection)
-        
         last = self.repository.last()
         
-        response = _initTest.delete(last[0])
+        if last is None:
+            id = 1
+        else:
+            id = last[0]
+        
+        response = _initTest.update(id, data)
+        
         self.assertTrue(response != None)
-    '''
+        self.assertEqual(response[2], data[0].get('name'))
