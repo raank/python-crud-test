@@ -9,28 +9,16 @@ class TestsProducts(unittest.TestCase):
         self.connection = Connection(True)
         self.entity = Product()
         self.repository = Repository(self.connection, self.entity.__tablename__)
-        
-        self.create_product()
-        
-    def create_product(self):
-        _initTest = Crud(self.entity, 'store', self.connection)
-        
-        data = [
-            {
-                'client_id': 1,
-                'name': 'Product Name',
-                'price': 1000
-            }
-        ]
-        
-        return _initTest.store(data)
+        self.repository_clients = Repository(self.connection, Client().__tablename__)
         
     def test_store_products(self):
         _initTest = Crud(self.entity, 'store', self.connection)
         
+        last_client = self.repository_clients.last()
+        
         data = [
             {
-                'client_id': 1,
+                'client_id': last_client[0],
                 'name': 'Product Name',
                 'price': 1000
             }
@@ -38,13 +26,20 @@ class TestsProducts(unittest.TestCase):
         
         response = _initTest.store(data)
         self.assertTrue(response != None)
-        self.assertEqual(response[1], 1)
+        self.assertEqual(response[1], last_client[0])
         self.assertEqual(response[2], data[0].get('name'))
 
     def test_show_products(self):
         _initTest = Crud(self.entity, 'show', self.connection)
         
-        response = _initTest.show(1)
+        last = _initTest.last()
+        
+        if last is None:
+            id = 1
+        else:
+            id = last[0]
+            
+        response = _initTest.show(id)
         self.assertTrue(response != None)
         
     def test_index_products(self):
@@ -57,6 +52,7 @@ class TestsProducts(unittest.TestCase):
         _initTest = Crud(self.entity, 'update', self.connection)
         
         last = self.repository.last()
+        
         data = [
             {
                 'price': 2000
@@ -66,7 +62,8 @@ class TestsProducts(unittest.TestCase):
         response = _initTest.update(last[0], data)
         self.assertTrue(response != None)
         self.assertEqual(response[3], data[0].get('price'))
-        
+    
+    '''
     def test_delete_products(self):
         _initTest = Crud(self.entity, 'delete', self.connection)
         
@@ -74,3 +71,4 @@ class TestsProducts(unittest.TestCase):
         
         response = _initTest.delete(last[0])
         self.assertTrue(response != None)
+    '''

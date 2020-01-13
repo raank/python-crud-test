@@ -13,6 +13,9 @@ class Crud(object):
         self.action = action
         self.model = entity
         self.repository = self.entity.repository()
+        
+    def last(self):
+        return self.repository.last()
     
     def index(self):
         return self.entity.index()

@@ -23,10 +23,10 @@ class Connection(object):
     def close(self):
         if self.conn:
             self.conn.close()
-            print('Connection closed')
             
     def cursor(self):
         return self.conn.cursor()
     
     def commit(self):
-        return self.conn.commit()
+        self.conn.commit()
+        self.cursor().close()
